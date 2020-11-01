@@ -16,4 +16,27 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    //Joysticks
+    public static final int JOYSTICK_PORT            = 0;
+    public static final int JOYSTICK_BUTTON_INTAKE   = 1;
+    public static final int JOYSTICK_BUTTON_OUTTAKE  = 2;
+    public static final int JOYSTICK_BUTTON_SOLENOID = 4;
+
+
+    //Drivetrain PWM Victor SPX Channels
+    public static final int FRONT_LEFT_SPX_CHANNEL   = 3;
+    public static final int FRONT_RIGHT_SPX_CHANNEL  = 4;
+    public static final int BACK_LEFT_SPX_CHANNEL    = 5;
+    public static final int BACK_RIGHT_SPX_CHANNEL   = 6;
+
+
+    //Flywheel Intake PWM Victor SPX Channels
+    public static final int FLYWHEEL_ONE_SPX_CHANNEL = 7;
+    public static final int FLYWHEEL_TWO_SPX_CHANNEL = 8;
+    public static final int FLYWHEEL_SPEED           = 1;
+
+    
+    //Solenoid Channel
+    public static final int SOLENOID_CHANNEL = 9;
+
 }

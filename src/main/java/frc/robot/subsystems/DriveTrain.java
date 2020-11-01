@@ -6,14 +6,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class DriveTrain extends SubsystemBase {
-    SpeedControllerGroup left;
-    SpeedControllerGroup right;
-    DifferentialDrive drive;
+    private SpeedControllerGroup left;
+    private SpeedControllerGroup right;
+    private DifferentialDrive drive;
 
-    public DriveTrain(SpeedControllerGroup l, SpeedControllerGroup r, DifferentialDrive d) {
-        this.left = l;
-        this.right = r;
-        this.drive = d;
+    public DriveTrain(SpeedControllerGroup left, SpeedControllerGroup right, DifferentialDrive drive) {
+        this.left = left;
+        this.right = right;
+        this.drive = drive;
     }
 
     public void takeJoystickInputs(Joystick left, Joystick right) {
