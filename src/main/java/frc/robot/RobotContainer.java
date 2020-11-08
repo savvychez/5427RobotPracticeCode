@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWMVictorSPX;
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 import frc.robot.commands.ControlFlywheel;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.MoveSolenoidHatch;
@@ -57,10 +59,19 @@ public class RobotContainer {
   private JoystickButton intakeButton;
   private JoystickButton outtakeButton;
 
+
   //Solenoid vars
   private Solenoid hatchSolenoid;
 
   private JoystickButton solenoidHatchButton;
+
+
+  //Arm vars
+  private SpeedController armController;
+  private AnalogPotentiometer armPotentiometer;
+
+  private JoystickButton armUpButton;
+  private JoystickButton armDownButton;
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -91,6 +102,11 @@ public class RobotContainer {
 
     //Solenoid Hatch
     hatchSolenoid = new Solenoid(Constants.SOLENOID_CHANNEL);
+
+
+    //Arm + Arm Limits
+    armController = new PWMVictorSPX(Constants.ARM_SPX_CHANNEL);
+    armPotentiometer = new AnalogPotentiometer(0, 180, 0);
 
     configureButtonBindings();
   }
@@ -126,5 +142,9 @@ public class RobotContainer {
 
   public Joystick getJoy() {
     return joy;
+  }
+
+  public AnalogPotentiometer getArmPotentiometer() {
+    return armPotentiometer;
   }
 }
