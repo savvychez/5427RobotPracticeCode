@@ -54,6 +54,6 @@ public class MoveSolenoidHatch extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return solenoidActivated;
+    return solenoidActivated; //return true OR use InstantCommand.java
   }
 }

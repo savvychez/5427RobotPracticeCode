@@ -82,7 +82,7 @@ public class RobotContainer {
 
 
     //Drivetrain Init
-    frontLeft = new PWMVictorSPX(Constants.FRONT_LEFT_SPX_CHANNEL);
+    frontLeft = new PWMVictorSPX(Constants.FRONT_LEFT_SPX_CHANNEL);//should be SteelTalonsController, which should extend WPI_VictorSPX
     frontRight = new PWMVictorSPX(Constants.FRONT_RIGHT_SPX_CHANNEL);
     backLeft = new PWMVictorSPX(Constants.BACK_LEFT_SPX_CHANNEL); 
     backRight = new PWMVictorSPX(Constants.BACK_RIGHT_SPX_CHANNEL);

@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
-public class DriveTrain extends SubsystemBase {
+public class DriveTrain extends SubsystemBase { //looks good! add a DriveWithJoystick to use the joystick to move dt
     private SpeedControllerGroup left;
     private SpeedControllerGroup right;
     private DifferentialDrive drive;

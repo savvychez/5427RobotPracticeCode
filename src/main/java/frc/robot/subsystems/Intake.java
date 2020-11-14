@@ -18,7 +18,7 @@ public class Intake extends SubsystemBase {
 
   public void setSpeed(double speed) {
       intakeMotorOne.set(speed);
-      intakeMotorOne.set(-speed);
+      intakeMotorOne.set(-speed); //incorporate SteelTalonsController. we'll go over it at the meeting tomorrow
   }
 
   public void stop() {

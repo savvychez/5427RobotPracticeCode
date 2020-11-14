@@ -21,7 +21,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void run(double speed) {
-      if(RobotContainer.getA)
+      if(RobotContainer.getA)//doesn't compile
       armController.set(speed);
   }
 
