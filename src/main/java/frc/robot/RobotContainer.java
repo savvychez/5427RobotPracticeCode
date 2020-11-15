@@ -126,7 +126,7 @@ public class RobotContainer {
     //Joystick Button Actions
     intakeButton.whenHeld(new ControlFlywheel(flywheelIntake, Constants.FLYWHEEL_SPEED));
     outtakeButton.whenHeld(new ControlFlywheel(flywheelIntake, -Constants.FLYWHEEL_SPEED)); 
-    solenoidHatchButton.whenHeld(new MoveSolenoidHatch(hatchSolenoid));
+    solenoidHatchButton.whenPressed(new MoveSolenoidHatch(hatchSolenoid));
   }
 
 
