@@ -10,19 +10,19 @@ package frc.robot;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PWMVictorSPX;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 import frc.robot.commands.ControlFlywheel;
-import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.DriveWithJoystick;
+import frc.robot.commands.MoveArm;
 import frc.robot.commands.MoveSolenoidHatch;
+import frc.robot.commands.MoveWrist;
+import frc.robot.commands.auto.DropOff;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Wrist;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -34,26 +34,26 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private Joystick joy;
+  private static Joystick joy;
 
 
   //DriveTrain vars
   private static DriveTrain driveTrain;
 
-  private SpeedController frontLeft;
-  private SpeedController frontRight;
-  private SpeedController backLeft;
-  private SpeedController backRight;
+  private SteelTalonsController frontLeft;
+  private SteelTalonsController frontRight;
+  private SteelTalonsController backLeft;
+  private SteelTalonsController backRight;
 
-  private SpeedControllerGroup left;
-  private SpeedControllerGroup right;
+  private SteelTalonsControllerGroup left;
+  private SteelTalonsControllerGroup right;
 
   private DifferentialDrive diffDrive;
 
 
   //Flywheel vars
-  private SpeedController intakeMotorOne;
-  private SpeedController intakeMotorTwo;
+  private SteelTalonsController intakeMotorOne;
+  private SteelTalonsController intakeMotorTwo;
   private Intake flywheelIntake;
 
   private JoystickButton intakeButton;
@@ -67,11 +67,21 @@ public class RobotContainer {
 
 
   //Arm vars
-  private SpeedController armController;
-  private AnalogPotentiometer armPotentiometer;
+  private Arm arm;
+  private SteelTalonsController armController;
+  private static AnalogPotentiometer armPotentiometer;
 
   private JoystickButton armUpButton;
   private JoystickButton armDownButton;
+
+
+  //Wrist vars
+  private Wrist wrist;
+  private SteelTalonsController wristController;
+  private static AnalogPotentiometer wristPotentiometer;
+
+  private JoystickButton wristUpButton;
+  private JoystickButton wristDownButton;
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -82,21 +92,21 @@ public class RobotContainer {
 
 
     //Drivetrain Init
-    frontLeft = new PWMVictorSPX(Constants.FRONT_LEFT_SPX_CHANNEL);//should be SteelTalonsController, which should extend WPI_VictorSPX
-    frontRight = new PWMVictorSPX(Constants.FRONT_RIGHT_SPX_CHANNEL);
-    backLeft = new PWMVictorSPX(Constants.BACK_LEFT_SPX_CHANNEL); 
-    backRight = new PWMVictorSPX(Constants.BACK_RIGHT_SPX_CHANNEL);
+    frontLeft = new SteelTalonsController(Constants.FRONT_LEFT_SPX_CHANNEL, Constants.FRONT_LEFT_REVERSED, Constants.FRONT_LEFT_BIAS);
+    frontRight = new SteelTalonsController(Constants.FRONT_RIGHT_SPX_CHANNEL, Constants.FRONT_RIGHT_REVERSED, Constants.FRONT_RIGHT_BIAS);
+    backLeft = new SteelTalonsController(Constants.BACK_LEFT_SPX_CHANNEL, Constants.BACK_LEFT_REVERSED, Constants.BACK_LEFT_BIAS); 
+    backRight = new SteelTalonsController(Constants.BACK_RIGHT_SPX_CHANNEL, Constants.BACK_RIGHT_REVERSED, Constants.BACK_RIGHT_BIAS);
 
-    left = new SpeedControllerGroup(frontLeft, backLeft);
-    right = new SpeedControllerGroup(frontRight, backRight);
+    left = new SteelTalonsControllerGroup(Constants.LEFT_GROUP_OFFSET, Constants.LEFT_GROUP_REVERSED, frontLeft, backLeft);
+    right = new SteelTalonsControllerGroup(Constants.RIGHT_GROUP_OFFSET, Constants.RIGHT_GROUP_REVERSED, frontRight, backRight);
 
     diffDrive = new DifferentialDrive(left, right);
     driveTrain = new DriveTrain(left, right, diffDrive);
 
 
     //Flywheel Intake Init
-    intakeMotorOne = new PWMVictorSPX(Constants.FLYWHEEL_ONE_SPX_CHANNEL);
-    intakeMotorTwo = new PWMVictorSPX(Constants.FLYWHEEL_TWO_SPX_CHANNEL);
+    intakeMotorOne = new SteelTalonsController(Constants.FLYWHEEL_ONE_SPX_CHANNEL, Constants.FLYWHEEL_ONE_REVERSED, Constants.FLYWHEEL_ONE_BIAS);
+    intakeMotorTwo = new SteelTalonsController(Constants.FLYWHEEL_TWO_SPX_CHANNEL, Constants.FLYWHEEL_TWO_REVERSED, Constants.FLYWHEEL_TWO_BIAS);
     flywheelIntake = new Intake(intakeMotorOne, intakeMotorTwo);
 
 
@@ -104,9 +114,14 @@ public class RobotContainer {
     hatchSolenoid = new Solenoid(Constants.SOLENOID_CHANNEL);
 
 
-    //Arm + Arm Limits
-    armController = new PWMVictorSPX(Constants.ARM_SPX_CHANNEL);
+    //Arm + Wrist Limits
+    armController = new SteelTalonsController(Constants.ARM_SPX_CHANNEL, Constants.ARM_REVERSED, Constants.ARM_BIAS);
     armPotentiometer = new AnalogPotentiometer(0, 180, 0);
+    arm = new Arm(armController);
+
+    wristController = new SteelTalonsController(Constants.WRIST_SPX_CHANNEL, Constants.WRIST_REVERSED, Constants.WRIST_BIAS);
+    wristPotentiometer = new AnalogPotentiometer(0, 180, 0);
+    wrist = new Wrist(wristController);
 
     configureButtonBindings();
   }
@@ -122,11 +137,21 @@ public class RobotContainer {
     intakeButton = new JoystickButton(joy, Constants.JOYSTICK_BUTTON_INTAKE); 
     outtakeButton = new JoystickButton(joy, Constants.JOYSTICK_BUTTON_OUTTAKE);
     solenoidHatchButton = new JoystickButton(joy, Constants.JOYSTICK_BUTTON_SOLENOID);
+    armUpButton = new JoystickButton(joy, Constants.JOYSTICK_BUTTON_ARM_UP);
+    armDownButton = new JoystickButton(joy, Constants.JOYSTICK_BUTTON_ARM_DOWN);
+    wristUpButton = new JoystickButton(joy, Constants.JOYSTICK_BUTTON_WRIST_UP);
+    wristDownButton = new JoystickButton(joy, Constants.JOYSTICK_BUTTON_WRIST_DOWN);
 
     //Joystick Button Actions
+    driveTrain = new DriveTrain(left, right, diffDrive);
+    driveTrain.setDefaultCommand(new DriveWithJoystick(driveTrain, joy));
     intakeButton.whenHeld(new ControlFlywheel(flywheelIntake, Constants.FLYWHEEL_SPEED));
     outtakeButton.whenHeld(new ControlFlywheel(flywheelIntake, -Constants.FLYWHEEL_SPEED)); 
     solenoidHatchButton.whenPressed(new MoveSolenoidHatch(hatchSolenoid));
+    armUpButton.whenHeld(new MoveArm(arm, Constants.ARM_SPEED, false));
+    armDownButton.whenHeld(new MoveArm(arm, Constants.ARM_SPEED, true));
+    wristUpButton.whenHeld(new MoveWrist(wrist, Constants.WRIST_SPEED, false));
+    wristDownButton.whenHeld(new MoveWrist(wrist, Constants.WRIST_SPEED, true));
   }
 
 
@@ -136,15 +161,18 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return null;//m_autoCommand;
+    return new DropOff(driveTrain, hatchSolenoid);
   }
 
-  public Joystick getJoy() {
+  public static Joystick getJoy() {
     return joy;
   }
 
-  public AnalogPotentiometer getArmPotentiometer() {
-    return armPotentiometer;
+  public static double getArmPotentiometerValue() {
+    return armPotentiometer.get();
+  }
+
+  public static double getWristPotentiometerValue() {
+    return wristPotentiometer.get();
   }
 }

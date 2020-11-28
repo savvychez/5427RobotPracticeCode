@@ -9,28 +9,29 @@ package frc.robot.commands;
 
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Arm;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
  * An example command that uses an example subsystem.
  */
-public class ControlFlywheel extends CommandBase {
-  private final Intake flywheelIntake;
+public class MoveArm extends CommandBase {
+  private Arm arm;
   private double speed;
+  private boolean reversed;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ControlFlywheel(Intake intake, double speed) {
-    this.flywheelIntake = intake;
+  public MoveArm(Arm arm, double speed, boolean reversed) {
+    this.arm = arm;
     this.speed = speed;
+    this.reversed = reversed;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intake);
+    addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
@@ -41,18 +42,18 @@ public class ControlFlywheel extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    flywheelIntake.setSpeed(speed);
+    arm.run(speed, reversed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    flywheelIntake.stop();
+    arm.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !(RobotContainer.getJoy().getRawButtonPressed(Constants.JOYSTICK_BUTTON_INTAKE) || RobotContainer.getJoy().getRawButton(Constants.JOYSTICK_BUTTON_OUTTAKE)); //needs to check if button is no longer pressed 
+    return !(RobotContainer.getJoy().getRawButtonPressed(Constants.JOYSTICK_BUTTON_ARM_UP) || RobotContainer.getJoy().getRawButton(Constants.JOYSTICK_BUTTON_ARM_DOWN)) || (RobotContainer.getArmPotentiometerValue() == Constants.ARM_UPPER_LIMIT || RobotContainer.getArmPotentiometerValue() == Constants.ARM_LOWER_LIMIT); //needs to check if button is no longer pressed 
   }
 }

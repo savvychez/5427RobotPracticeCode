@@ -7,30 +7,29 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.SteelTalonsController;
 
-public class Arm extends SubsystemBase {
-    private SteelTalonsController armController;
+public class Wrist extends SubsystemBase {
+    private SteelTalonsController wristController;
   /**
    * Creates a new ExampleSubsystem.
    */
-  public Arm(SteelTalonsController armController) {
-    this.armController = armController;
+  public Wrist(SteelTalonsController wristController) {
+    this.wristController = wristController;
   }
 
-  public void run(double speed, boolean reserved) {
-      if(RobotContainer.getArmPotentiometerValue() >= Constants.ARM_LOWER_LIMIT && RobotContainer.getArmPotentiometerValue() <= Constants.ARM_UPPER_LIMIT)
-        armController.set(speed, reserved);
+  public void run(double speed, boolean reversed) {
+      if(RobotContainer.getWristPotentiometerValue() >= Constants.WRIST_LOWER_LIMIT && RobotContainer.getWristPotentiometerValue() <= Constants.WRIST_UPPER_LIMIT)
+        wristController.set(speed, reversed);
       else
-        armController.set(0);
+        wristController.set(0, reversed);
   }
 
   public void stop() {
-    armController.stopMotor();
+    wristController.stopMotor();
   }
 
   @Override
